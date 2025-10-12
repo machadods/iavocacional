@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>IAVocacional – O Futuro da Educação aqui IAGORA</title>
+  <style>
+    body {
+      margin: 0; padding: 0;
+      font-family: 'Poppins', sans-serif;
+      color: #f8fafc;
+      background: #020617;
+      overflow-x: hidden;
+      min-height: 100vh;
+    }
+
+    canvas#matrix {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: radial-gradient(circle at center, #0f172a, #000);
+      z-index: 0;
+    }
+
+    header, section, footer, .quiz-container, .result-container {
+      position: relative;
+      z-index: 2;
+    }
+
+    header {
+      text-align: center;
+      padding: 120px 20px 80px;
+      background: rgba(0,0,0,0.5);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid rgba(255,215,0,0.2);
+      box-shadow: 0 0 40px rgba(255,215,0,0.2);
+      animation: fadeIn 1.5s ease;
+    }
+
+    h1 {
+      font-size: 3rem;
+      background: linear-gradient(to right, #facc15, #fde68a);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: 0 0 25px rgba(255,215,0,0.6);
+    }
+
+    h2, p { color: #e2e8f0; }
+
+    p { max-width: 800px; margin: 0 auto; line-height: 1.6; }
+
+    .cta-button {
+      background: linear-gradient(to right, #facc15, #fde68a);
+      border: none;
+      color: #111827;
+      padding: 16px 36px;
+      font-size: 1.1rem;
+      font-weight: 700;
+      border-radius: 50px;
+      cursor: pointer;
+      margin-top: 25px;
+      transition: all 0.3s ease;
+      box-shadow: 0 0 30px rgba(255,215,0,0.4);
+    }
+
+    .cta-button:hover {
+      transform: scale(1.08);
+      box-shadow: 0 0 50px rgba(255,215,0,0.7);
+    }
+
+    .section { text-align: center; padding: 90px 20px; background: rgba(0,0,0,0.5); backdrop-filter: blur(8px); }
+
+    footer { text-align: center; padding: 40px; font-size: 0.9rem; color: #facc15; background: rgba(0,0,0,0.7); }
+
+    .quiz-container {
+      display: none;
+      max-width: 700px;
+      margin: 60px auto;
+      background: rgba(255,255,255,0.05);
+      border-radius: 16px;
+      padding: 40px;
+      text-align: center;
+      animation: fadeIn 1s ease;
+    }
+
+    .question { font-size: 1.2rem; margin-bottom: 20px; }
+    .options button {
+      display: block;
+      width: 100%;
+      margin: 8px 0;
+      padding: 12px;
+      background: #1e293b;
+      color: #f8fafc;
+      border: 1px solid #334155;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .options button:hover { background: linear-gradient(to right, #facc15, #fde68a); color: #111827; }
+
+    .progress { height: 10px; background: #1e293b; border-radius: 5px; overflow: hidden; margin: 20px 0; }
+    .progress-bar { height: 100%; background: linear-gradient(to right, #facc15, #fde68a); width: 0%; transition: width 0.4s ease; }
+
+    .result-container {
+      display: none;
+      text-align: center;
+      padding: 40px;
+      background: rgba(255,255,255,0.05);
+      border-radius: 16px;
+      max-width: 700px;
+      margin: 50px auto;
+      animation: fadeIn 1.2s ease;
+    }
+
+    .input-email {
+      margin-top: 20px;
+      padding: 10px;
+      width: 80%;
+      max-width: 300px;
+      border-radius: 10px;
+      border: 1px solid #facc15;
+      background: rgba(0,0,0,0.3);
+      color: #facc15;
+      text-align: center;
+      font-size: 1rem;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+  <canvas id="matrix"></canvas>
+
+  <header id="hero">
+    <h1> 🔑 O Futuro da Educação Começa com Propósito</h1>
+    <h2>Atualmente <span style="color:#facc15;">Milhares</span> de estudantes abandonam a faculdade.<br> 5 a cada 10 trocam cursos, sem base de autoconhecimento seguem perdidos.</h2>
+    <p>O <strong>iavocacional</strong> é o jogo da vida real que une <b>IA, propósito e gamificação</b> para transformar a forma como jovens aprendem e se descobrem.</p>
+    <button class="cta-button" onclick="startQuiz()">🚀 Iniciar Teste Vocacional Prévia</button>
+  </header>
+
+  <div class="quiz-container" id="quiz">
+    <div class="progress"><div class="progress-bar" id="progress-bar"></div></div>
+    <div class="question" id="question"></div>
+    <div class="options" id="options"></div>
+  </div>
+
+  <div class="result-container" id="result">
+    <h2>✨ Seu Perfil Vocacional</h2>
+    <p id="result-text"></p>
+    <p style="margin-top:25px;color:#facc15;font-size:1.1rem;">🚀 Garanta acesso antecipado e faça parte da revolução da educação vocacional.</p>
+    <input type="email" id="emailInput" class="input-email" placeholder="Digite seu e-mail para entrar na lista de espera">
+    <button class="cta-button" onclick="sendEmail()">📬 Entrar na Lista de Espera</button>
+    <p style="margin-top:25px;">Ou fale diretamente com o fundador:</p>
+    <button class="cta-button" onclick="window.open('https://wa.me/554999089580','_blank')">💬 Falar com o Fundador</button>
+  </div>
+
+  <footer>© 2025 IAGORA · Desenvolvido com Propósito e Inteligência</footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
+  <script>
+    (function(){ emailjs.init('e1P5lSa6D5KZ_ukHP'); })();
+
+    function sendEmail() {
+      const email = document.getElementById('emailInput').value;
+      if (!email) {
+        alert('Por favor, insira um e-mail válido.');
+        return;
+      }
+      const params = { email: email, to_email: 'iavocacional@outlook.com' };
+      emailjs.send('service_v9ezko4', 'template_lnih2sr', params)
+        .then(() => {
+          alert('Obrigado! Seu e-mail foi adicionado à lista de espera e enviado para iavocacional@outlook.com.');
+          document.getElementById('emailInput').value = '';
+        })
+        .catch(() => {
+          alert('Ocorreu um erro ao enviar. Tente novamente.');
+        });
+    }
+
+    const canvas = document.getElementById('matrix');
+    const ctx = canvas.getContext('2d');
+    canvas.height = window.innerHeight;
+    canvas.width = window.innerWidth;
+
+    const letters = '01AI∑Ω∆ΨΦΞΓΣ∫πλ'.split('');
+    const fontSize = 16;
+    const columns = canvas.width / fontSize;
+    const drops = [];
+    for (let i = 0; i < columns; i++) drops[i] = 1;
+
+    function draw() {
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = '#facc15';
+      ctx.font = fontSize + 'px monospace';
+      for (let i = 0; i < drops.length; i++) {
+        const text = letters[Math.floor(Math.random() * letters.length)];
+        ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+        if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
+        drops[i]++;
+      }
+    }
+    setInterval(draw, 33);
+
+    const questions = [
+      'O que te move de verdade quando pensa no futuro?',
+      'Como você decide seus caminhos diante de uma escolha importante?',
+      'Em que tipo de ambiente você sente que sua energia cresce?',
+      'Quando a pressão chega, o que você faz?',
+      'O que te faz se sentir mais vivo durante o dia?',
+      'Como você lida com a rotina?',
+      'Qual dessas frases parece mais com você?',
+      'Quando as coisas não saem como o esperado, você tende a...',
+      'Como se imagina daqui a 10 anos?',
+      'Qual seu estilo de aprendizado preferido?',
+      'Como se sente em relação à liderança?',
+      'Qual valor é inegociável na sua carreira?'
+    ];
+
+    const options = [
+      ['Ser reconhecido e admirado', 'Ter segurança financeira', 'Fazer a diferença na vida das pessoas', 'Criar algo novo que marque o mundo'],
+      ['Analiso logicamente', 'Sigo a intuição', 'Converso com pessoas de confiança', 'Testo rápido e aprendo com erros'],
+      ['Ambientes organizados', 'Locais criativos e flexíveis', 'Equipes colaborativas', 'Desafios e competição'],
+      ['Organizo e sigo o plano', 'Peço ajuda', 'Penso em alternativas criativas', 'Uso a pressão como combustível'],
+      ['Resolver problemas difíceis', 'Ajudar alguém a crescer', 'Criar algo novo', 'Liderar uma equipe'],
+      ['Prefiro variedade', 'Gosto de rotina', 'Aceito se fizer sentido', 'Torno-a criativa'],
+      ['Sou analítico', 'Sou comunicativo', 'Sou criativo', 'Sou prático'],
+      ['Revejo o plano', 'Busco apoio', 'Penso diferente', 'Tento de novo'],
+      ['Liderando um negócio', 'Sendo especialista', 'Criando projetos', 'Melhorando a sociedade'],
+      ['Lendo e estudando', 'Em grupo', 'Na prática', 'Criando livremente'],
+      ['Prefiro ser guiado', 'Trabalho em igualdade', 'Assumo aos poucos', 'Lidero desde cedo'],
+      ['Ética e propósito', 'Liberdade e autonomia', 'Reconhecimento', 'Segurança e estabilidade']
+    ];
+
+    let current = 0;
+    let score = { Criativo: 0, Analitico: 0, Pratico: 0, Social: 0 };
+
+    function startQuiz() {
+      document.getElementById('hero').style.display = 'none';
+      document.getElementById('quiz').style.display = 'block';
+      showQuestion();
+    }
+
+    function showQuestion() {
+      if (current < questions.length) {
+        document.getElementById('question').textContent = questions[current];
+        const opts = options[current];
+        const optContainer = document.getElementById('options');
+        optContainer.innerHTML = '';
+        opts.forEach(opt => {
+          const btn = document.createElement('button');
+          btn.textContent = opt;
+          btn.onclick = () => selectOption(opt);
+          optContainer.appendChild(btn);
+        });
+        document.getElementById('progress-bar').style.width = ((current / questions.length) * 100) + '%';
+      } else {
+        showResult();
+      }
+    }
+
+    function selectOption(opt) {
+      if (opt.includes('Criar') || opt.includes('criativo')) score.Criativo++;
+      else if (opt.includes('Analiso') || opt.includes('analítico')) score.Analitico++;
+      else if (opt.includes('Liderar') || opt.includes('prático')) score.Pratico++;
+      else score.Social++;
+      current++;
+      showQuestion();
+    }
+
+    function showResult() {
+      document.getElementById('quiz').style.display = 'none';
+      document.getElementById('result').style.display = 'block';
+      const type = Object.keys(score).reduce((a,b)=>score[a]>score[b]?a:b);
+      const profiles = {
+        Criativo: 'Sua mente é um laboratório vivo de possibilidades. Você conecta ideias, símbolos e emoções em combinações únicas, transformando o invisível em experiências tangíveis. Tem uma sensibilidade estética apurada e um desejo genuíno de provocar transformação através da imaginação. Sua energia se manifesta quando há liberdade para experimentar, inventar e inspirar. Ambientes que incentivam inovação, expressão e originalidade fazem você alcançar seu auge.',
+        Analitico: 'Você possui uma mente estruturada e contemplativa. Encontra segurança na lógica e prazer em compreender o funcionamento das coisas. Para você, o conhecimento é uma construção precisa e metódica, e cada dado tem um significado maior dentro do todo. Seu foco natural, disciplina e pensamento estratégico fazem de você alguém capaz de solucionar problemas complexos e criar ordem onde há incerteza. Ambientes que valorizam pesquisa, análise e planejamento permitem que sua mente floresça.',
+        Pratico: 'Você é movido por resultados e concretude. Aprende fazendo, lidera pelo exemplo e acredita que o valor de uma ideia está na execução. Seu pensamento é objetivo e orientado para a eficiência — você transforma planos em ação e obstáculos em aprendizado. Tem perfil de liderança natural e senso apurado de responsabilidade. Carreiras que envolvem gestão, empreendedorismo e engenharia se alinham ao seu espírito realizador.',
+        Social: 'Sua força está nas relações humanas. Você compreende o outro com empatia genuína e acredita que o crescimento pessoal e coletivo caminham juntos. Sua presença inspira confiança e cria vínculos profundos. Enxerga o trabalho como um espaço de contribuição e sentido, não apenas de resultados. Ambientes que priorizam educação, psicologia, liderança e desenvolvimento humano refletem sua essência cooperativa e transformadora.'
+      };
+      document.getElementById('result-text').textContent = profiles[type];
+    }
+  </script>
+</body>
+</html>
