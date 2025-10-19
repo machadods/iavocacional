@@ -160,26 +160,39 @@
 
   <footer>© 2025 IAGORA · Desenvolvido com Propósito e Inteligência Artificial</footer>
 
-  <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
-  <script>
-    (function(){ emailjs.init('e1P5lSa6D5KZ_ukHP'); })();
+<script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
+<script>
+(function(){
+  emailjs.init('e1P5lSa6D5KZ_ukHP');
+})();
 
-    function sendEmail() {
-      const email = document.getElementById('emailInput').value;
-      if (!email) {
-        alert('Por favor, insira um e-mail válido.');
-        return;
-      }
-      const params = { email: email, to_email: 'iavocacional@outlook.com' };
-      emailjs.send('service_v9ezko4', 'template_lnih2sr', params)
-        .then(() => {
-          alert('Obrigado! Seu e-mail foi adicionado à lista de espera e enviado para iavocacional@outlook.com.');
-          document.getElementById('emailInput').value = '';
-        })
-        .catch(() => {
-          alert('Ocorreu um erro ao enviar. Tente novamente.');
-        });
-    }
+function sendEmail() {
+  const email = document.getElementById('emailInput').value;
+  if (!email) {
+    alert('Por favor, insira um e-mail válido.');
+    return;
+  }
+
+  const params = {
+    name: "Visitante do site IAVocacional",
+    email: email,
+    message: "Solicitou acesso antecipado ao IAVocacional.",
+    title: "Lista de Espera IAVocacional",
+    to_email: "iavocacional@outlook.com"
+  };
+
+  emailjs.send('service_v9ezko4', 'template_lnih2sr', params)
+    .then(() => {
+      alert('✅ Obrigado! Seu e-mail foi adicionado à lista de espera e enviado para iavocacional@outlook.com.');
+      document.getElementById('emailInput').value = '';
+    })
+    .catch((error) => {
+      console.error('Erro:', error);
+      alert('❌ Ocorreu um erro ao enviar. Tente novamente.');
+    });
+}
+</script>
+
 
     const canvas = document.getElementById('matrix');
     const ctx = canvas.getContext('2d');
